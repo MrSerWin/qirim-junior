@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QirimJunior.Views.ItemsPage"
+             xmlns:effects="clr-namespace:QirimJunior.Controls"
+             xmlns:converters="clr-namespace:QirimJunior.Converters"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:ffTrans="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"           
+             Title="{Binding Title}"
+             x:Name="BrowseItemsPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BootToOpposite x:Key="bootToOpposite" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Filter" Clicked="Handle_Clicked">
+            <ToolbarItem.Icon>
+                <OnPlatform x:TypeArguments="FileImageSource">
+                    <On Platform="Android, UWP" Value="filter.png" />
+                </OnPlatform>
+            </ToolbarItem.Icon>
+        </ToolbarItem>
+        <!-- <ToolbarItem Text="Delete" 
+                     Clicked="Delete_Clicked" 
+                     IsEnabled="{Binding CanDelete}">
+            <ToolbarItem.Icon>
+                <OnPlatform x:TypeArguments="FileImageSource">
+                    <On Platform="Android, UWP, iOS" Value="delete.png" />
+                </OnPlatform>
+            </ToolbarItem.Icon>
+        </ToolbarItem> -->
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout>
+                <StackLayout x:Name="pnFilter" IsVisible="false" 
+                             Margin="10">
+                    <StackLayout Orientation="Vertical">
+                        <StackLayout>
+                            <Picker ItemsSource="{Binding Authors}" 
+                                    ItemDisplayBinding="{Binding Name}"
+                                    SelectedItem="{Binding SelectedAuthor}"
+                                    Title="Müelif"
+                                    />
+                                
+                            <Picker ItemsSource="{Binding Themes}" 
+                                    ItemDisplayBinding="{Binding Name}"
+                                    SelectedItem="{Binding SelectedTheme}"
+                                    Title="Mevzu"/>
+                            <StackLayout Orientation="Horizontal"
+                                         HorizontalOptions="FillAndExpand">
+                            
+                                <Label Text="Kirillik"
+                                       HorizontalOptions="End"/>
+                                <Switch IsToggled="{Binding IsLatin, Mode=TwoWay}"
+                                        x:Name="swIsLatin"
+                                        HorizontalOptions="Center"/>
+                                <Label Text="Latince" 
+                                       HorizontalOptions="Start"/>
+                                
+                            </StackLayout>
+                        </StackLayout>       
+                        <StackLayout HorizontalOptions="FillAndExpand"
+                                     Orientation="Horizontal">
+                            <Button Text="Temizlemek" 
+                                    HorizontalOptions="End"
+                                    Command="{Binding ClearCommand}" />
+                        </StackLayout>
+                        
+                    </StackLayout>
+                </StackLayout>
+            </StackLayout>
+            <ListView x:Name="ItemsListView" 
+                      ItemsSource="{Binding Poems}"
+                      SelectedItem="{Binding SelectedPoem}"
+                      
+                      HasUnevenRows="true"
+                      VerticalOptions="FillAndExpand"
+                      SeparatorVisibility="None"
+                      
+                      RefreshCommand="{Binding LoadItemsCommand}"
+                      IsPullToRefreshEnabled="true"
+                       
+                      IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                      CachingStrategy="RetainElement"
+                      >
+                      
+                
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ContentView>
+                                <Grid  Margin="10" Padding="20" BackgroundColor="White">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="50"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackLayout Grid.Column="0" Grid.Row="0" VerticalOptions="Center">
+                                        <ffimageloading:CachedImage HorizontalOptions="FillAndExpand" 
+                                                                    HeightRequest="200"
+                                                                    LoadingPlaceholder="imageLoadingPlaceholder.png"
+                                                                    DownsampleToViewSize="true"
+                                                                    Aspect="AspectFill"
+                                                                    CacheDuration="30"
+                                                                    RetryCount="3"
+                                                                    RetryDelay="450"
+                                                                    Source ="{Binding ImageToView}">
+                                            
+                                        </ffimageloading:CachedImage>
+                                    </StackLayout>
+
+                                    <StackLayout Grid.Column="0" Grid.Row="1" VerticalOptions="Center">
+                                        <Label Text="{Binding TitleLat}" 
+                                               LineBreakMode="NoWrap" 
+                                               Style="{DynamicResource ListItemTextStyle}" 
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               IsVisible="{Binding Source={x:Reference swIsLatin},Path=IsToggled}"/>
+                                        
+                                        <Label Text="{Binding TitleCyr}" 
+                                               LineBreakMode="NoWrap" 
+                                               Style="{DynamicResource ListItemTextStyle}" 
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               IsVisible="{Binding Source={x:Reference swIsLatin},Path=IsToggled, Converter={StaticResource bootToOpposite}}}"/>
+                                        
+                                        
+                                        <Label Text="{Binding Author}" 
+                                               LineBreakMode="NoWrap"
+                                               Style="{DynamicResource ListItemDetailTextStyle}"
+                                               FontSize="14" />
+                                    </StackLayout>
+                                    <Grid.Effects>
+                                        <effects:ViewShadowEffect Radius="5" DistanceX="5" DistanceY="5" Color="Gray" />
+                                    </Grid.Effects>
+                                </Grid>
+                            </ContentView>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

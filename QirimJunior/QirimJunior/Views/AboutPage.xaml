@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QirimJunior.Views.AboutPage"
+             xmlns:vm="clr-namespace:QirimJunior.ViewModels"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <vm:AboutViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!--Page Level Resources: Compatibile with Xamarin Live Player -->
+            <Color x:Key="Primary">#2196F3</Color>
+            <Color x:Key="Accent">#82dbb5</Color>
+            <Color x:Key="LightTextColor">#999999</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackLayout BackgroundColor="{StaticResource Accent}" VerticalOptions="FillAndExpand" HorizontalOptions="Fill">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                <ContentView Padding="0,40,0,40" VerticalOptions="FillAndExpand">
+                    <Image Source="xamarin_logo.png" VerticalOptions="Center" HeightRequest="64" />
+                </ContentView>
+            </StackLayout>
+        </StackLayout>
+        <ScrollView Grid.Row="1">
+            <StackLayout Orientation="Vertical" Padding="16,40,16,40" Spacing="10">
+                <Label FontSize="22">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <FormattedString.Spans>
+                                <Span Text="{Binding AppName}" FontAttributes="Bold" FontSize="22" />
+                                <Span Text=" " />
+                                <Span Text="{Binding AppVersion}" ForegroundColor="{StaticResource LightTextColor}" />
+                            </FormattedString.Spans>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <!--<Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <FormattedString.Spans>
+                                <Span Text="Сборник детских стихотворений современных крымскотатарских поэтов. Удобная книжка в телефоне поможет развлечь ребенка в дороге, или выучить новое стихотворенье, а также укрепить знания родного языка. Сборник удобен для поиска стихотворений как по авторам, так и по различным темам. Оформление - команда " />
+                                <Span Text="Къырым Джуниор" FontAttributes="Bold" />
+                                <Span Text=". Техническая поддержка - " />
+                                <Span Text="Тито.сайт" FontAttributes="Bold" />
+                                <Span Text=" и крымскотатарский портал " />
+                                <Span Text="Ана юрт" FontAttributes="Bold" />
+                                <Span Text="." />
+                            </FormattedString.Spans>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label> -->
+                <Label LineHeight="1.2">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <FormattedString.Spans>
+                                <Span Text="Qırımtatar zemaneviy şairleriniñ bala şiirleri cıyıntıĝı. Telefonda ilâve olaraq taqdim etilgen bu elektron kitapçıq, yol boyu balañıznı eglendirmek, yañı şiirni ögrenmek, böyleliknen ana tili bilgilerini pekitmege yardım eter. Cıyıntıqtaki şiirlerni hem üellif, hem de mevzusına köre qolay tapmaq mümkün. Bezetme- " />
+                                <Span Text="Qirim.Jr" FontAttributes="Bold" />
+                                <Span Text=" taqımı. Tehnik destek- " />
+                                <Span Text="Tito.site" FontAttributes="Bold" />
+                                <Span Text=" ve " />
+                                <Span Text="AnaYurt" FontAttributes="Bold" />
+                                <Span Text="qırımtatar portal." />
+                            </FormattedString.Spans>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Label Text="Сборник детских стихотворений современных крымскотатарских поэтов." />
+
+
+                <Label Text="Bağlantılar" FontSize="Large" />
+                <Label Text="Qirim.Jr"
+                           MaxLines="2"
+                           Margin="5"
+                           TextColor="Teal">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                                Tapped="QirimJrTapped"
+                                NumberOfTapsRequired="1" />
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Facebook/Qirim Junior"
+                           MaxLines="2"
+                           Margin="5"
+                           TextColor="Teal">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                                Tapped="QirimJrFbTapped"
+                                NumberOfTapsRequired="1" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Label Text="Tito.site"
+                           MaxLines="2"
+                           Margin="5"
+                           TextColor="Teal">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                                Tapped="TitoSiteTapped"
+                                NumberOfTapsRequired="1" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Label Text="AnaYurt"
+                           MaxLines="2"
+                           Margin="5"
+                           TextColor="Teal">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                                Tapped="AnaYurtTapped"
+                                NumberOfTapsRequired="1" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Label Text="İşleyici" FontSize="Large" />
+                <Label Text="Servin Osmanov"
+                           MaxLines="2"
+                           Margin="5"
+                           TextColor="Teal">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                                Tapped="ServinTapped"
+                                NumberOfTapsRequired="1" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

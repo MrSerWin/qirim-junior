@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QirimJunior.Views.ItemDetailPage"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             Title="{Binding Title}">
+    <ScrollView>
+        <Grid>
+            <Image Source="qj_logo.png" Aspect="AspectFit"
+                   VerticalOptions="End"
+                   HorizontalOptions="StartAndExpand"
+                   
+                   />
+
+            <StackLayout Spacing="20" Padding="15">
+                <ffimageloading:CachedImage HorizontalOptions="FillAndExpand" 
+                                            HeightRequest="200"
+			                                DownsampleToViewSize="true"
+                                            Aspect="AspectFill"
+			                                Source="{Binding Item.ImageToView}">
+                    <ffimageloading:CachedImage.GestureRecognizers>
+                        <TapGestureRecognizer 
+	    		            Command="{Binding TapCommand}" 
+	    		            CommandParameter="{Binding Item.ImageToView}" />
+                    </ffimageloading:CachedImage.GestureRecognizers>
+                </ffimageloading:CachedImage>
+                <Label Text="{Binding Title}" 
+                       FontSize="Large"                                
+                       FontAttributes="Bold" 
+                       HorizontalTextAlignment="Center"/>
+                <Label Text="{Binding Poem}"
+                       HorizontalOptions="Center"
+                       FontSize="Large"
+                       LineHeight="1.2"/>
+                <Label Text="{Binding Item.Author}"
+                       FontSize="Small"
+                       FontAttributes="Italic"
+                       LineHeight="1.2"
+                       HorizontalOptions="End"/>
+            </StackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

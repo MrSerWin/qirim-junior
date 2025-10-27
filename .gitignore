@@ -1,0 +1,8 @@
+
+*.DS_Store
+QirimJunior/QirimJunior.Android/bin/
+QirimJunior/QirimJunior.Android/obj/
+QirimJunior/QirimJunior.iOS/obj/
+QirimJunior/QirimJunior.iOS/bin/
+QirimJunior/QirimJunior/bin/
+QirimJunior/QirimJunior/obj/
