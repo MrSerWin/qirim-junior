@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { use, useMemo } from 'react';
 import {
   View,
   Text,
@@ -6,40 +6,47 @@ import {
   ScrollView,
   Dimensions,
   Linking,
+  TouchableOpacity,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Animated, {
   FadeInDown,
   FadeInUp,
-  BounceIn,
 } from 'react-native-reanimated';
 
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { AnimatedButton } from '../components/AnimatedButton';
 import { theme } from '../theme';
+import { getAppVersion } from '../utils/appVersion';
 
 const { width } = Dimensions.get('window');
 
 const AboutScreen: React.FC = () => {
-  const handleOpenWebsite = async () => {
-    const url = 'https://qirimjr.org';
+  const handleOpenLink = async (url: string) => {
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
       await Linking.openURL(url);
     }
   };
 
+  const handleOpenWebsite = () => handleOpenLink('https://qirimjr.org');
+  const handleOpenFacebook = () => handleOpenLink('https://www.facebook.com/qirimjunior');
+  const handleOpenTitoSite = () => handleOpenLink('https://eumerov.com');
+  const handleOpenAnaYurt = () => handleOpenLink('https://ana-yurt.com');
+  const handleOpenServinOsmanov = () => handleOpenLink('https://www.facebook.com/servin.osmanov');
+
+  
+  const version = useMemo(() => getAppVersion(), []);
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Animated.View entering={FadeInUp.delay(100)} style={styles.header}>
         <FastImage
-          source={require('../assets/ic_launcher.png')}
-          style={styles.logo}
+          source={require('../assets/xamarin_logo.png')}
+          style={styles.techLogo}
           resizeMode={FastImage.resizeMode.contain}
         />
-        <Text style={styles.appName}>Qırım Junior</Text>
-        <Text style={styles.version}>Версия 2.0.0</Text>
+        {version && <Text style={styles.version}>Версия {version}</Text>}
       </Animated.View>
 
       <Animated.View entering={FadeInDown.delay(200)} style={styles.card}>
@@ -47,53 +54,68 @@ const AboutScreen: React.FC = () => {
           <Icon name="book-heart" size={32} color={theme.colors.primary} />
           <Text style={styles.cardTitle}>О приложении</Text>
         </View>
+
         <Text style={styles.description}>
-          Qırım Junior — современное мобильное приложение для детей,
-          содержащее коллекцию крымскотатарских стихов. Приложение
-          поддерживает латиницу и кириллицу, работает полностью
-          офлайн и создано с любовью для юных читателей.
+          Qırımtatar zemaneviy şairleriniñ bala şiirleri cıyıntıĝı. Telefonda ilâve olaraq taqdim etilgen bu elektron kitapçıq, yol boyu balañıznı eglendirmek, yañı şiirni ögrenmek, böyleliknen ana tili bilgilerini pekitmege yardım eter. Cıyıntıqtaki şiirlerni hem üellif, hem de mevzusına köre qolay tapmaq mümkün. Bezetme-
+          <Text style={{ fontWeight: 'bold' }}>Qirim.Jr</Text> taqımı.
+        </Text>
+
+        <Text style={styles.description}>
+          Tehnik destek: <Text style={{ fontWeight: 'bold' }}>Tito.site </Text>
+          ve <Text style={{ fontWeight: 'bold' }}>AnaYurt</Text> qırımtatar portal.
+        </Text>
+
+        <Text style={styles.description}>
+          Сборник детских стихотворений современных крымскотатарских поэтов.
         </Text>
       </Animated.View>
 
       <Animated.View entering={FadeInDown.delay(300)} style={styles.card}>
         <View style={styles.cardHeader}>
-          <Icon name="palette" size={32} color={theme.colors.secondary} />
-          <Text style={styles.cardTitle}>Особенности</Text>
+          <Icon name="link-variant" size={32} color={theme.colors.secondary} />
+          <Text style={styles.cardTitle}>Bağlantılar</Text>
         </View>
-        <View style={styles.featureList}>
-          {features.map((feature, index) => (
-            <View key={index} style={styles.featureItem}>
-              <Icon
-                name={feature.icon}
-                size={24}
-                color={theme.colors.primary}
-              />
-              <Text style={styles.featureText}>{feature.text}</Text>
-            </View>
-          ))}
+
+        <View style={styles.linksList}>
+          <TouchableOpacity onPress={handleOpenWebsite} style={styles.linkItem}>
+            <Icon name="web" size={20} color={theme.colors.primary} />
+            <Text style={styles.linkText}>Qirim.Jr</Text>
+            <Icon name="chevron-right" size={20} color={theme.colors.textLight} />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleOpenFacebook} style={styles.linkItem}>
+            <Icon name="facebook" size={20} color={theme.colors.primary} />
+            <Text style={styles.linkText}>Facebook/Qirim Junior</Text>
+            <Icon name="chevron-right" size={20} color={theme.colors.textLight} />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleOpenTitoSite} style={styles.linkItem}>
+            <Icon name="web" size={20} color={theme.colors.primary} />
+            <Text style={styles.linkText}>Эмиль Умеров</Text>
+            <Icon name="chevron-right" size={20} color={theme.colors.textLight} />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleOpenAnaYurt} style={styles.linkItem}>
+            <Icon name="web" size={20} color={theme.colors.primary} />
+            <Text style={styles.linkText}>AnaYurt</Text>
+            <Icon name="chevron-right" size={20} color={theme.colors.textLight} />
+          </TouchableOpacity>
         </View>
       </Animated.View>
 
       <Animated.View entering={FadeInDown.delay(400)} style={styles.card}>
-        <FastImage
-          source={require('../assets/xamarin_logo.png')}
-          style={styles.techLogo}
-          resizeMode={FastImage.resizeMode.contain}
-        />
-        <Text style={styles.techText}>
-          Полностью переписано на React Native с использованием
-          современных технологий и лучших практик разработки.
-        </Text>
-      </Animated.View>
+        <View style={styles.cardHeader}>
+          <Icon name="code-braces" size={32} color={theme.colors.secondary} />
+          <Text style={styles.cardTitle}>İşleyici</Text>
+        </View>
 
-      <Animated.View entering={BounceIn.delay(500)} style={styles.actionCard}>
-        <AnimatedButton
-          title="Посетить наш сайт"
-          onPress={handleOpenWebsite}
-          variant="primary"
-          size="large"
-          style={styles.button}
-        />
+        <View style={styles.linksList}>
+          <TouchableOpacity onPress={handleOpenServinOsmanov} style={styles.linkItem}>
+            <Icon name="account" size={20} color={theme.colors.primary} />
+            <Text style={styles.linkText}>Servin Osmanov</Text>
+            <Icon name="chevron-right" size={20} color={theme.colors.textLight} />
+          </TouchableOpacity>
+        </View>
       </Animated.View>
 
       <View style={styles.footer}>
@@ -182,6 +204,7 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.md,
     lineHeight: theme.fontSize.md * 1.6,
     color: theme.colors.textSecondary,
+    marginBottom: theme.spacing.md,
   },
   featureList: {
     gap: theme.spacing.md,
@@ -226,6 +249,24 @@ const styles = StyleSheet.create({
   copyright: {
     fontSize: theme.fontSize.sm,
     color: theme.colors.textLight,
+  },
+  linksList: {
+    gap: theme.spacing.xs,
+  },
+  linkItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.background,
+  },
+  linkText: {
+    flex: 1,
+    fontSize: theme.fontSize.md,
+    color: theme.colors.primary,
+    fontWeight: theme.fontWeight.medium,
   },
 });
 

@@ -6,13 +6,13 @@
 
 export const API_CONFIG = {
   // TODO: Replace with your actual API URL
-  BASE_URL: 'https://your-api-server.com/api',
+  BASE_URL: 'https://junior.ana-yurt.com/api/',
 
   // API Endpoints
   ENDPOINTS: {
-    POEMS: '/poems',
-    SYNC: '/sync',
-    HEALTH: '/health',
+    POEMS: '?action=poems',
+    // SYNC: '/sync',
+    // HEALTH: '/health',
   },
 
   // Request timeout in milliseconds

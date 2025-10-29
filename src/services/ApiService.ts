@@ -52,19 +52,23 @@ class ApiService {
   /**
    * Check if server is reachable
    */
-  async checkConnection(): Promise<boolean> {
-    try {
-      const response = await fetch(buildUrl(API_CONFIG.ENDPOINTS.HEALTH), {
-        method: 'GET',
-        timeout: 5000,
-      } as any);
+  // async checkConnection(): Promise<boolean> {
+  //   try {
+  //     const response = await fetch(buildUrl(API_CONFIG.ENDPOINTS.HEALTH), {
+  //       method: 'GET',
+  //       timeout: 5000,
+  //     } as any);
 
-      return response.ok;
-    } catch (error) {
-      console.error('ApiService: Connection check failed:', error);
-      return false;
-    }
-  }
+  //     return response.ok;
+  //   } catch (error) {
+  //     // Silently fail if server is not configured or unreachable
+  //     // This is expected behavior when API_BASE_URL is placeholder
+  //     if (__DEV__) {
+  //       console.log('ApiService: Server not reachable (this is expected if not configured)');
+  //     }
+  //     return false;
+  //   }
+  // }
 
   /**
    * Sync poems incrementally based on last sync date

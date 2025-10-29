@@ -19,11 +19,11 @@ class SyncService {
       console.log('SyncService: Starting sync...', force ? '(forced)' : '');
 
       // Check internet connection first
-      const hasConnection = await ApiService.checkConnection();
-      if (!hasConnection) {
-        console.log('SyncService: No internet connection');
-        return { success: false, message: 'Нет подключения к интернету' };
-      }
+      // const hasConnection = await ApiService.checkConnection();
+      // if (!hasConnection) {
+      //   console.log('SyncService: No internet connection');
+      //   return { success: false, message: 'Нет подключения к интернету' };
+      // }
 
       // Get last sync date for incremental sync
       const lastSyncDate = force ? undefined : await StorageService.getLastSync();
@@ -51,10 +51,13 @@ class SyncService {
       };
 
     } catch (error) {
-      console.error('SyncService: Sync failed:', error);
+      // Log error only in dev mode to avoid showing errors when server is not configured
+      if (__DEV__) {
+        console.log('SyncService: Sync failed (this is expected if server is not configured):', error);
+      }
       return {
         success: false,
-        message: 'Ошибка синхронизации. Попробуйте позже.'
+        message: 'Синхронизация недоступна'
       };
     } finally {
       this.isSyncing = false;
