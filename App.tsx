@@ -4,6 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RootNavigator } from '@navigation/RootNavigator';
 
 import DataInitializer from '@services/DataInitializer';
+import SyncService from '@services/SyncService';
 import { LoadingSpinner } from './src/components/LoadingSpinner';
 import { theme } from './src/theme';
 
@@ -17,8 +18,15 @@ const App: React.FC = () => {
 
   const initializeApp = async () => {
     try {
-      // Initialize database with poems
+      // Initialize database with bundled poems
       await DataInitializer.initialize();
+
+      // Try to sync with server in background (don't block app loading)
+      SyncService.autoSync().catch((err) => {
+        console.log('Background sync failed:', err);
+        // Silent fail - app still works with local data
+      });
+
       setIsReady(true);
     } catch (err) {
       console.error('Failed to initialize app:', err);

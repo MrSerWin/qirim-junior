@@ -18,6 +18,7 @@ import { useLanguage } from '../hooks/useLanguage';
 import { AuthorModel, ThemeModel } from '../database';
 import { usePoems } from '../hooks/usePoems';
 import PoemService from '../services/PoemService';
+import SyncService from '../services/SyncService';
 import { theme } from '../theme';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -37,6 +38,7 @@ const PoemsListScreen: React.FC = () => {
   const [authors, setAuthors] = useState<AuthorModel[]>([]);
   const [themes, setThemes] = useState<ThemeModel[]>([]);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [syncing, setSyncing] = useState(false);
 
   const { poems, loading, refresh } = usePoems({
     author: selectedAuthor || undefined,
@@ -63,8 +65,19 @@ const PoemsListScreen: React.FC = () => {
     [navigation]
   );
 
-  const handleRefresh = useCallback(() => {
-    refresh();
+  const handleRefresh = useCallback(async () => {
+    setSyncing(true);
+
+    // Sync with server
+    const result = await SyncService.sync(true);
+
+    // Refresh local data
+    await refresh();
+
+    setSyncing(false);
+
+    // Show result message (you can use a toast/snackbar here)
+    console.log('Sync result:', result.message);
   }, [refresh]);
 
   const clearFilters = () => {
@@ -77,8 +90,8 @@ const PoemsListScreen: React.FC = () => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <View style={styles.headerRight}>
+      headerLeft: () => (
+        <View style={styles.headerLeft}>
           <TouchableOpacity
             style={styles.filterButton}
             onPress={() => setFilterModalVisible(true)}
@@ -90,6 +103,10 @@ const PoemsListScreen: React.FC = () => {
             />
             {hasActiveFilters && <View style={styles.filterBadge} />}
           </TouchableOpacity>
+        </View>
+      ),
+      headerRight: () => (
+        <View style={styles.headerRight}>
           <LanguageToggle language={language} onToggle={toggleLanguage} />
         </View>
       ),
@@ -117,7 +134,7 @@ const PoemsListScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
-            refreshing={loading}
+            refreshing={loading || syncing}
             onRefresh={handleRefresh}
             tintColor={theme.colors.primary}
             colors={[theme.colors.primary]}
@@ -257,6 +274,11 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingVertical: theme.spacing.md,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: theme.spacing.sm,
   },
   headerRight: {
     flexDirection: 'row',
