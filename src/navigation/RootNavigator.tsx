@@ -3,8 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types';
 import MainTabNavigator from './MainTabNavigator';
-// import PoemDetailScreen from '@screens/PoemDetailScreen';
-// import { theme } from '@/theme';
+import PoemDetailScreen from '@screens/PoemDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -13,15 +12,9 @@ export const RootNavigator: React.FC = () => {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerStyle: {
-            // backgroundColor: theme.colors.surface,
-          },
+          headerStyle: {},
           headerShadowVisible: true,
-          // headerTintColor: theme.colors.text,
-          headerTitleStyle: {
-            // fontWeight: theme.fontWeight.bold,
-            // fontSize: theme.fontSize.lg,
-          },
+          headerTitleStyle: {},
           animation: 'slide_from_right',
         }}
       >
@@ -30,7 +23,7 @@ export const RootNavigator: React.FC = () => {
           component={MainTabNavigator}
           options={{ headerShown: false }}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="PoemDetail"
           component={PoemDetailScreen}
           options={{
@@ -38,7 +31,7 @@ export const RootNavigator: React.FC = () => {
             headerTransparent: true,
             headerBackTitle: '',
           }}
-        /> */}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

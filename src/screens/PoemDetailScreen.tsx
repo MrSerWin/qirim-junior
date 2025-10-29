@@ -20,9 +20,9 @@ import Animated, {
 import PoemService from '@services/PoemService';
 import { PoemModel } from '@database';
 import { useLanguage } from '@hooks/useLanguage';
-import { LoadingSpinner } from 'src/components/LoadingSpinner';
-import { LanguageToggle } from 'src/components/LanguageToggle';
-import { theme } from 'src/theme';
+import { theme } from '../theme';
+import { LanguageToggle } from '../components/LanguageToggle';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const { width, height } = Dimensions.get('window');
 const IMAGE_HEIGHT = height * 0.4;
@@ -111,7 +111,7 @@ const PoemDetailScreen: React.FC = () => {
             }}
             style={styles.image}
             resizeMode={FastImage.resizeMode.cover}
-            defaultSource={require('@assets/placeholder.png')}
+            defaultSource={require('../assets/placeholder.png')}
           />
           <View style={styles.imageOverlay} />
         </Animated.View>
