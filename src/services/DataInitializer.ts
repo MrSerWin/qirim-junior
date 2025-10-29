@@ -1,6 +1,6 @@
-import { Poem } from 'src/types';
+import { Poem } from '../types';
 import PoemService from './PoemService';
-import { StorageService } from 'src/utils/storage';
+import { StorageService } from '../utils/storage';
 
 
 // Import the poems JSON data

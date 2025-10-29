@@ -56,8 +56,8 @@ export const PoemCard: React.FC<PoemCardProps> = ({
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }, { translateY: translateY.value }],
-    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
+    // Removed translateY and opacity from animated style to prevent disappearing on press
   }));
 
   const handlePressIn = () => {

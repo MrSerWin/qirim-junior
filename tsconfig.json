@@ -12,7 +12,11 @@
       "@screens": ["./src/screens"],
       "@screens/*": ["./src/screens/*"],
       "@navigation": ["./src/navigation"],
-      "@navigation/*": ["./src/navigation/*"]
+      "@navigation/*": ["./src/navigation/*"],
+      "@components": ["./src/components"],
+      "@components/*": ["./src/components/*"],
+      "@assets": ["./src/assets"],
+      "@assets/*": ["./src/assets/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
