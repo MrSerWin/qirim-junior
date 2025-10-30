@@ -63,8 +63,8 @@ const AboutScreen: React.FC = () => {
 
       <Animated.View entering={FadeInDown.delay(200)} style={styles.card}>
         <View style={styles.cardHeader}>
-          <Icon name="book-heart" size={32} color={theme.colors.primary} />
-          <Text style={styles.cardTitle}>О приложении</Text>
+          <Icon name="information" size={32} color={theme.colors.primary} />
+          <Text style={styles.cardTitle}>Biz aqqında</Text>
         </View>
 
         <Text style={styles.description}>

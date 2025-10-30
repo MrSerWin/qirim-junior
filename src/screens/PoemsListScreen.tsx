@@ -169,14 +169,14 @@ const PoemsListScreen: React.FC = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Фильтры</Text>
+              <Text style={styles.modalTitle}>Filtrler</Text>
               <TouchableOpacity onPress={() => setFilterModalVisible(false)}>
                 <Icon name="close" size={24} color={theme.colors.text} />
               </TouchableOpacity>
             </View>
 
             <ScrollView style={styles.filterSection}>
-              <Text style={styles.filterLabel}>Автор</Text>
+              <Text style={styles.filterLabel}>Müellif</Text>
               <View style={styles.filterOptions}>
                 <TouchableOpacity
                   style={[
@@ -191,7 +191,7 @@ const PoemsListScreen: React.FC = () => {
                       !selectedAuthor && styles.filterOptionTextActive,
                     ]}
                   >
-                    Все
+                    Episi
                   </Text>
                 </TouchableOpacity>
                 {authors.map((author) => (
@@ -216,7 +216,7 @@ const PoemsListScreen: React.FC = () => {
                 ))}
               </View>
 
-              <Text style={styles.filterLabel}>Тема</Text>
+              <Text style={styles.filterLabel}>Mevzu</Text>
               <View style={styles.filterOptions}>
                 <TouchableOpacity
                   style={[
@@ -231,7 +231,7 @@ const PoemsListScreen: React.FC = () => {
                       !selectedTheme && styles.filterOptionTextActive,
                     ]}
                   >
-                    Все
+                    Episi
                   </Text>
                 </TouchableOpacity>
                 {themes.map((theme) => (
@@ -262,13 +262,13 @@ const PoemsListScreen: React.FC = () => {
                 style={styles.clearButton}
                 onPress={clearFilters}
               >
-                <Text style={styles.clearButtonText}>Сбросить</Text>
+                <Text style={styles.clearButtonText}>Clear</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.applyButton}
                 onPress={() => setFilterModalVisible(false)}
               >
-                <Text style={styles.applyButtonText}>Применить</Text>
+                <Text style={styles.applyButtonText}>Apply</Text>
               </TouchableOpacity>
             </View>
           </View>

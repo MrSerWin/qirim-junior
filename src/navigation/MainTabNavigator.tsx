@@ -47,7 +47,7 @@ const MainTabNavigator: React.FC = () => {
         name="PoemsList"
         component={PoemsListScreen}
         options={{
-          tabBarLabel: 'Стихи',
+          tabBarLabel: 'Şiirler',
           headerTitle: 'Qırım Junior',
           tabBarIcon: ({ color, size }) => (
             <Icon name="book-open-page-variant" size={size} color={color} />
@@ -58,8 +58,8 @@ const MainTabNavigator: React.FC = () => {
         name="About"
         component={AboutScreen}
         options={{
-          tabBarLabel: 'О нас',
-          headerTitle: 'О приложении',
+          tabBarLabel: 'Biz aqqında',
+          headerTitle: 'Biz aqqında',
           tabBarIcon: ({ color, size }) => (
             <Icon name="information" size={size} color={color} />
           ),
