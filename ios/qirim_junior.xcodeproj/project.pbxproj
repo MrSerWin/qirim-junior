@@ -112,6 +112,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+				FD10A7F01F1FE541742FC0E9 /* Copy Hermes dSYM */,
 			);
 			buildRules = (
 			);
@@ -239,6 +240,20 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-qirim_junior/Pods-qirim_junior-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		FD10A7F01F1FE541742FC0E9 /* Copy Hermes dSYM */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Hermes dSYM";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nif [ \"$CONFIGURATION\" = \"Release\" ]; then\n  HERMES_DSYM_PATH=\"$SRCROOT/dSYMs/iphoneos/hermesvm.framework.dSYM\"\n  \n  if [ -d \"$HERMES_DSYM_PATH\" ]; then\n    echo \"Copying Hermes dSYM to archive...\"\n    cp -R \"$HERMES_DSYM_PATH\" \"$DWARF_DSYM_FOLDER_PATH\" || true\n  else\n    echo \"Warning: Hermes dSYM not found at $HERMES_DSYM_PATH\"\n  fi\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -260,6 +275,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 2;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 2X28L455LN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = qirim_junior/Info.plist;
@@ -278,6 +294,7 @@
 				PRODUCT_NAME = qirim_junior;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -289,6 +306,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 2;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 2X28L455LN;
 				INFOPLIST_FILE = qirim_junior/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -305,6 +323,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.anaurt.QirimJunior;
 				PRODUCT_NAME = qirim_junior;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

@@ -1,97 +1,189 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Qırım Junior v3.0.0
 
-# Getting Started
+Сборник детских стихотворений современных крымскотатарских поэтов.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+> Qırımtatar zemaneviy şairleriniñ bala şiirleri cıyıntıĝı.
 
-## Step 1: Start Metro
+## 📱 О приложении
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+Мобильное приложение для чтения детских стихотворений на крымскотатарском языке с поддержкой латиницы и кириллицы.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+**Основные возможности:**
+- 📚 Коллекция детских стихов крымскотатарских поэтов
+- 🔤 Переключение между латиницей и кириллицей
+- 🎨 Красочные иллюстрации к стихам
+- 🔍 Фильтрация по авторам и темам
+- 📱 Работает полностью оффлайн
+- 🔄 Синхронизация с сервером
 
-```sh
-# Using npm
+## 🚀 Быстрый старт
+
+### Для разработки
+
+```bash
+# Установка зависимостей
+npm install
+cd ios && pod install && cd ..
+
+# Запуск Metro bundler
 npm start
 
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+# Запуск на Android
 npm run android
 
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+# Запуск на iOS
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+### Для production сборки
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```bash
+# Android (AAB для Google Play)
+npm run build:android:bundle
 
-## Step 3: Modify your app
+# Android (APK для тестирования)
+npm run build:android
 
-Now that you have successfully run the app, let's make changes!
+# iOS (через Xcode)
+npm run build:ios:release
+# Затем: open ios/qirim_junior.xcworkspace
+```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+**Все команды сборки:** [BUILD_COMMANDS.md](BUILD_COMMANDS.md) 📋
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## 📦 Технологии
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+- **React Native** 0.82 с New Architecture
+- **TypeScript** для типобезопасности
+- **WatermelonDB** для локального хранения
+- **React Navigation** 7 для навигации
+- **React Native Reanimated** 4 для анимаций
+- **Hermes Engine** для оптимизации
 
-## Congratulations! :tada:
+## 📁 Структура проекта
 
-You've successfully run and modified your React Native App. :partying_face:
+```
+qirim-junior/
+├── src/
+│   ├── components/       # Переиспользуемые компоненты
+│   ├── screens/          # Экраны приложения
+│   ├── navigation/       # Навигация
+│   ├── services/         # Бизнес-логика и API
+│   ├── database/         # WatermelonDB модели и схемы
+│   ├── hooks/            # Custom React hooks
+│   ├── utils/            # Утилиты
+│   ├── theme/            # Тема и стили
+│   ├── types/            # TypeScript типы
+│   └── assets/           # Изображения и иконки
+├── android/              # Android нативный код
+├── ios/                  # iOS нативный код
+└── data/                 # Начальные данные стихов
+```
 
-### Now what?
+## 🔧 Доступные команды
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+### Разработка
+```bash
+npm start                 # Запуск Metro bundler
+npm run android           # Запуск на Android
+npm run ios               # Запуск на iOS
+npm run lint              # Проверка кода
+npm run test              # Запуск тестов
+npm run kill              # Убить Metro bundler
+```
 
-# Troubleshooting
+### Сборка
+```bash
+npm run build:android              # Android APK
+npm run build:android:bundle       # Android AAB
+npm run build:android:install      # Установка release
+npm run build:ios:release          # iOS release
+npm run build:all                  # Все сразу
+```
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+### Обслуживание
+```bash
+npm run clean              # Полная очистка
+npm run clean:android      # Очистка Android
+npm run clean:ios          # Очистка iOS
+npm run icons              # Генерация иконок
+```
 
-# Learn More
+## 📚 Документация
 
-To learn more about React Native, take a look at the following resources:
+- [BUILD_COMMANDS.md](BUILD_COMMANDS.md) - Шпаргалка команд сборки
+- [PRODUCTION_BUILD.md](PRODUCTION_BUILD.md) - Подробное руководство по production сборке
+- [RELEASE_NOTES_v3.0.md](RELEASE_NOTES_v3.0.md) - Что нового в версии 3.0
+- [ICONS_README.md](ICONS_README.md) - Документация по иконкам
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## 🆚 Версия
+
+**Текущая версия:** 3.0.0 (Build 10)
+
+- iOS: CFBundleShortVersionString в Info.plist
+- Android: versionName в build.gradle
+- npm: version в package.json
+
+## 🔄 Синхронизация
+
+Приложение синхронизируется с сервером для получения новых стихов:
+- API: `https://junior.ana-yurt.com/api/?action=poems`
+- Автоматическая синхронизация раз в 24 часа
+- Ручная синхронизация через pull-to-refresh
+
+## 🎨 Иконки
+
+Все иконки приложения генерируются автоматически:
+
+```bash
+npm run icons
+```
+
+Подробнее: [ICONS_README.md](ICONS_README.md)
+
+## 🐛 Troubleshooting
+
+### Metro bundler не запускается
+```bash
+npm run kill
+npm start
+```
+
+### Проблемы со сборкой
+```bash
+npm run clean
+```
+
+### Android build failed
+```bash
+npm run clean:android
+npm run build:android
+```
+
+### iOS build failed
+```bash
+npm run clean:ios
+open ios/qirim_junior.xcworkspace
+```
+
+## 🤝 Участники
+
+- **Разработка:** Servin Osmanov
+- **Контент:** Qirim.Jr команда
+- **Дизайн:** Qirim.Jr
+- **Техническая поддержка:** Tito.site, AnaYurt
+
+## 🔗 Ссылки
+
+- Website: https://qirimjr.org
+- Facebook: https://www.facebook.com/qirimjunior
+- Developer: https://eumerov.com
+- Portal: https://ana-yurt.com
+
+## 📄 Лицензия
+
+© 2025 Qırım Junior. Все права защищены.
+
+---
+
+**Сделано с ❤️ для детей Крыма**

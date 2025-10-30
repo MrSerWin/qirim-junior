@@ -81,3 +81,6 @@ android/.gradle/8.8/.DS_Store
 android/app/keystore.jks
 
 keys/
+
+# Hermes dSYM files - run ios/download-hermes-dsym.sh to download
+ios/dSYMs/
