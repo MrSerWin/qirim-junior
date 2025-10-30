@@ -1,6 +1,6 @@
 {
   "name": "qirim_junior",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -8,7 +8,17 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "kill": "lsof -ti:8081 | xargs kill -9 2>/dev/null || true && rm -rf /tmp/metro-* /tmp/haste-* ~/.metro 2>/dev/null || true"
+    "kill": "lsof -ti:8081 | xargs kill -9 2>/dev/null || true && rm -rf /tmp/metro-* /tmp/haste-* ~/.metro 2>/dev/null || true",
+    "clean": "npm run kill && rm -rf node_modules ios/Pods ios/build android/build android/app/build && npm install && cd ios && pod install && cd ..",
+    "clean:android": "cd android && ./gradlew clean && cd ..",
+    "clean:ios": "rm -rf ios/Pods ios/build && cd ios && pod install && cd ..",
+    "build:android": "cd android && ./gradlew assembleRelease && cd ..",
+    "build:android:bundle": "cd android && ./gradlew bundleRelease && cd ..",
+    "build:android:install": "cd android && ./gradlew installRelease && cd ..",
+    "build:ios:release": "react-native run-ios --configuration Release",
+    "prebuild": "npm run clean",
+    "build:all": "npm run build:android:bundle && echo '\n✅ Android bundle ready!' && echo '📱 For iOS, open Xcode and Archive manually'",
+    "icons": "./generate-icons.sh"
   },
   "dependencies": {
     "@nozbe/simdjson": "^3.9.4",
