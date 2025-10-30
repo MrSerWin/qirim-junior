@@ -39,24 +39,25 @@ const PoemsListScreen: React.FC = () => {
   const [themes, setThemes] = useState<ThemeModel[]>([]);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const [syncProgress, setSyncProgress] = useState({ loaded: 0, total: 0, percentage: 0 });
 
   const { poems, loading, refresh } = usePoems({
     author: selectedAuthor || undefined,
     theme: selectedTheme || undefined,
   });
 
-  useEffect(() => {
-    loadFilters();
-  }, []);
-
-  const loadFilters = async () => {
+  const loadFilters = useCallback(async () => {
     const [authorsData, themesData] = await Promise.all([
       PoemService.getAuthors(),
       PoemService.getThemes(),
     ]);
     setAuthors(authorsData);
     setThemes(themesData);
-  };
+  }, []);
+
+  useEffect(() => {
+    loadFilters();
+  }, [loadFilters]);
 
   const handlePoemPress = useCallback(
     (poemId: number) => {
@@ -67,18 +68,28 @@ const PoemsListScreen: React.FC = () => {
 
   const handleRefresh = useCallback(async () => {
     setSyncing(true);
+    setSyncProgress({ loaded: 0, total: 0, percentage: 0 });
 
-    // Sync with server
-    const result = await SyncService.sync(true);
+    // Sync with server with progress callback
+    const result = await SyncService.sync(true, (progress) => {
+      setSyncProgress(progress);
+    });
 
-    // Refresh local data
+    // Refresh local data (poems list)
     await refresh();
 
-    setSyncing(false);
+    // Reload filters if new poems were synced (new authors/themes may be added)
+    if (result.success && result.totalPoems && result.totalPoems > 0) {
+      console.warn(`✅ Synced ${result.totalPoems} poems, reloading filters...`);
+      await loadFilters();
+    }
 
-    // Show result message (you can use a toast/snackbar here)
+    setSyncing(false);
+    setSyncProgress({ loaded: 0, total: 0, percentage: 0 });
+
+    // Show result message
     console.log('Sync result:', result.message);
-  }, [refresh]);
+  }, [refresh, loadFilters]);
 
   const clearFilters = () => {
     setSelectedAuthor(null);

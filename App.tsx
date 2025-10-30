@@ -17,19 +17,25 @@ const App: React.FC = () => {
   }, []);
 
   const initializeApp = async () => {
+    console.warn('🚀 App: Starting initialization...');
     try {
       // Initialize database with bundled poems
       await DataInitializer.initialize();
+      console.warn('✅ App: Data initialization complete');
 
       // Try to sync with server in background (don't block app loading)
-      SyncService.autoSync().catch((err) => {
-        console.log('Background sync failed:', err);
+      console.warn('🔄 App: Starting background sync...');
+      SyncService.autoSync().then(() => {
+        console.warn('✅ App: Background sync completed');
+      }).catch((err) => {
+        console.warn('❌ App: Background sync failed:', err);
         // Silent fail - app still works with local data
       });
 
       setIsReady(true);
+      console.warn('✅ App: Ready to show UI');
     } catch (err) {
-      console.error('Failed to initialize app:', err);
+      console.error('❌ Failed to initialize app:', err);
       setError('Не удалось загрузить приложение. Попробуйте перезапустить.');
     }
   };
@@ -93,61 +99,3 @@ const styles = StyleSheet.create({
 });
 
 export default App;
-
-/*
-import { NewAppScreen } from '@react-native/new-app-screen';
-import React from 'react';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { enableScreens } from 'react-native-screens';
-import { RootNavigator } from './src/navigation/RootNavigator';
-// import { RootNavigator } from '@/navigation/RootNavigator';
-// import { theme } from '@/theme';
-
-// Enable react-native-screens
-enableScreens();
-
-
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
-  );
-}
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <GestureHandlerRootView style={styles.container}>
-      <StatusBar
-        barStyle="dark-content"
-      />
-      <RootNavigator />
-    </GestureHandlerRootView>
-    // <View style={styles.container}>
-    //   <NewAppScreen
-    //     templateFileName="App.tsx"
-    //     safeAreaInsets={safeAreaInsets}
-    //   />
-    // </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
-export default App;
-*/

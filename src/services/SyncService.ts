@@ -1,54 +1,67 @@
-import ApiService from './ApiService';
+import { InteractionManager } from 'react-native';
+import ApiService, { SyncProgress } from './ApiService';
 import PoemService from './PoemService';
 import { StorageService } from '../utils/storage';
+import { API_CONFIG } from '../config/api';
+import { Poem } from '../types';
+
+export interface SyncResult {
+  success: boolean;
+  message: string;
+  totalPoems?: number;
+  newPoems?: number;
+}
+
+type ProgressCallback = (progress: SyncProgress) => void;
 
 class SyncService {
   private isSyncing = false;
+  private progressCallback: ProgressCallback | null = null;
 
   /**
-   * Perform full or incremental sync with server
+   * Perform sync with server with background processing
+   * Uses InteractionManager to avoid UI freezes
    */
-  async sync(force: boolean = false): Promise<{success: boolean; message: string}> {
+  async sync(force: boolean = false, onProgress?: ProgressCallback): Promise<SyncResult> {
     if (this.isSyncing) {
-      console.log('SyncService: Sync already in progress');
+      console.warn('⚠️  SyncService.sync: Already in progress');
       return { success: false, message: 'Синхронизация уже выполняется' };
     }
 
     try {
       this.isSyncing = true;
-      console.log('SyncService: Starting sync...', force ? '(forced)' : '');
+      this.progressCallback = onProgress || null;
+      console.warn(`🔄 SyncService.sync: Starting... ${force ? '(FORCED)' : '(AUTO)'}`);
 
       // Check internet connection first
-      // const hasConnection = await ApiService.checkConnection();
-      // if (!hasConnection) {
-      //   console.log('SyncService: No internet connection');
-      //   return { success: false, message: 'Нет подключения к интернету' };
-      // }
-
-      // Get last sync date for incremental sync
-      const lastSyncDate = force ? undefined : await StorageService.getLastSync();
-      console.log('SyncService: Last sync date:', lastSyncDate || 'Never');
+      console.warn('🌐 SyncService.sync: Checking connection...');
+      const hasConnection = await ApiService.checkConnection();
+      if (!hasConnection) {
+        console.warn('❌ SyncService.sync: No internet connection');
+        return { success: false, message: 'Нет подключения к интернету' };
+      }
+      console.warn('✅ SyncService.sync: Connection OK');
 
       // Fetch poems from server
-      const syncResponse = await ApiService.syncPoems(lastSyncDate || undefined);
-      console.log('SyncService: Fetched', syncResponse.poems.length, 'poems');
+      console.warn('📥 SyncService.sync: Fetching poems from server...');
+      const syncResponse = await ApiService.fetchPoems(this.onFetchProgress.bind(this));
+      const serverPoems = syncResponse.data;
 
-      if (syncResponse.poems.length === 0) {
-        console.log('SyncService: No new poems to sync');
-        return { success: true, message: 'Нет новых стихов' };
+      if (!serverPoems || serverPoems.length === 0) {
+        console.warn('⚠️  SyncService.sync: No poems received from server');
+        return { success: true, message: 'Нет данных на сервере', totalPoems: 0, newPoems: 0 };
       }
 
-      // Import poems to local database
-      await PoemService.importPoems(syncResponse.poems);
+      console.warn(`📚 SyncService.sync: Fetched ${serverPoems.length} poems from server`);
+
+      // Process poems in background using InteractionManager
+      const result = await this.processPoemsInBackground(serverPoems);
 
       // Update last sync date
-      await StorageService.setLastSync(syncResponse.lastUpdated);
+      await StorageService.setLastSync(new Date().toISOString());
 
       console.log('SyncService: Sync completed successfully');
-      return {
-        success: true,
-        message: `Загружено ${syncResponse.poems.length} ${this.getPoemWord(syncResponse.poems.length)}`
-      };
+      return result;
 
     } catch (error) {
       // Log error only in dev mode to avoid showing errors when server is not configured
@@ -57,10 +70,73 @@ class SyncService {
       }
       return {
         success: false,
-        message: 'Синхронизация недоступна'
+        message: 'Ошибка синхронизации'
       };
     } finally {
       this.isSyncing = false;
+      this.progressCallback = null;
+    }
+  }
+
+  /**
+   * Process poems in background using batching to avoid UI freeze
+   */
+  private async processPoemsInBackground(poems: Poem[]): Promise<SyncResult> {
+    return new Promise((resolve) => {
+      // Wait for interactions to finish before processing
+      InteractionManager.runAfterInteractions(async () => {
+        try {
+          let processedCount = 0;
+          const batchSize = API_CONFIG.BATCH_SIZE;
+          const totalBatches = Math.ceil(poems.length / batchSize);
+
+          console.log(`SyncService: Processing ${poems.length} poems in ${totalBatches} batches`);
+
+          // Process poems in batches
+          for (let i = 0; i < poems.length; i += batchSize) {
+            const batch = poems.slice(i, i + batchSize);
+
+            // Import batch
+            await PoemService.importPoems(batch);
+
+            processedCount += batch.length;
+
+            // Report progress
+            if (this.progressCallback) {
+              this.progressCallback({
+                loaded: processedCount,
+                total: poems.length,
+                percentage: Math.round((processedCount / poems.length) * 100),
+              });
+            }
+
+            // Yield to main thread between batches to keep UI responsive
+            await new Promise<void>(resolve => setTimeout(() => resolve(), 0));
+          }
+
+          resolve({
+            success: true,
+            message: `Загружено ${poems.length} ${this.getPoemWord(poems.length)}`,
+            totalPoems: poems.length,
+            newPoems: poems.length,
+          });
+        } catch (error) {
+          console.error('SyncService: Error processing poems:', error);
+          resolve({
+            success: false,
+            message: 'Ошибка обработки данных',
+          });
+        }
+      });
+    });
+  }
+
+  /**
+   * Progress callback for fetch operation
+   */
+  private onFetchProgress(progress: SyncProgress) {
+    if (this.progressCallback) {
+      this.progressCallback(progress);
     }
   }
 
@@ -71,16 +147,16 @@ class SyncService {
     const lastSync = await StorageService.getLastSync();
 
     if (!lastSync) {
-      console.log('SyncService: Never synced before');
-      return true;
+      console.log('SyncService: Never synced before - will sync now');
+      return true; // Auto-sync on first launch to get server data
     }
 
-    // Sync if last sync was more than 24 hours ago
+    // Sync if last sync was more than configured hours ago
     const lastSyncDate = new Date(lastSync);
     const now = new Date();
     const hoursSinceLastSync = (now.getTime() - lastSyncDate.getTime()) / (1000 * 60 * 60);
 
-    const shouldSync = hoursSinceLastSync > 24;
+    const shouldSync = hoursSinceLastSync > API_CONFIG.SYNC_INTERVAL_HOURS;
     console.log('SyncService: Hours since last sync:', hoursSinceLastSync.toFixed(2));
     console.log('SyncService: Should sync:', shouldSync);
 
@@ -88,17 +164,28 @@ class SyncService {
   }
 
   /**
-   * Auto-sync if needed (called on app start or manual refresh)
+   * Auto-sync if needed (called on app start)
    */
   async autoSync(): Promise<void> {
+    console.warn('🔍 SyncService.autoSync: Checking if sync is needed...');
     const shouldSync = await this.shouldSync();
 
     if (shouldSync) {
-      console.log('SyncService: Auto-syncing...');
+      console.warn('✅ SyncService.autoSync: Sync needed, starting...');
       await this.sync();
+      console.warn('✅ SyncService.autoSync: Sync completed');
     } else {
-      console.log('SyncService: Auto-sync skipped (recent sync exists)');
+      console.warn('⏭️  SyncService.autoSync: Sync skipped (recent sync exists)');
     }
+  }
+
+  /**
+   * Cancel ongoing sync operation
+   */
+  cancelSync() {
+    ApiService.cancelFetch();
+    this.isSyncing = false;
+    this.progressCallback = null;
   }
 
   /**

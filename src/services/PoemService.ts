@@ -94,7 +94,7 @@ class PoemService {
             poem.author = poemData.Author;
             poem.theme = poemData.Theme;
             poem.image = poemData.Image;
-            poem.imageToView = poemData.ImageToView;
+            // imageToView is now a computed getter in PoemModel
             poem.updatedAt = new Date(poemData.UpdatedAt);
             poem.isDeleted = poemData.IsDeleted;
             poem.isNeedToBeAdded = poemData.IsNeedToBeAdded;

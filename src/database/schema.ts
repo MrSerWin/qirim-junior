@@ -1,7 +1,7 @@
 import { appSchema, tableSchema } from '@nozbe/watermelondb';
 
 export const schema = appSchema({
-  version: 1,
+  version: 2, // Bumped version to remove image_to_view column
   tables: [
     tableSchema({
       name: 'poems',
@@ -14,7 +14,6 @@ export const schema = appSchema({
         { name: 'author', type: 'string', isIndexed: true },
         { name: 'theme', type: 'string', isIndexed: true },
         { name: 'image', type: 'string' },
-        { name: 'image_to_view', type: 'string' },
         { name: 'updated_at', type: 'number' },
         { name: 'is_deleted', type: 'boolean' },
         { name: 'is_need_to_be_added', type: 'boolean' },

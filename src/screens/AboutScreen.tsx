@@ -23,9 +23,21 @@ const { width } = Dimensions.get('window');
 
 const AboutScreen: React.FC = () => {
   const handleOpenLink = async (url: string) => {
-    const canOpen = await Linking.canOpenURL(url);
-    if (canOpen) {
+    try {
+      // Try to open URL directly (works on most Android versions)
       await Linking.openURL(url);
+    } catch (error) {
+      // Fallback: check if URL can be opened
+      try {
+        const canOpen = await Linking.canOpenURL(url);
+        if (canOpen) {
+          await Linking.openURL(url);
+        } else {
+          console.warn(`Cannot open URL: ${url}`);
+        }
+      } catch (err) {
+        console.error('Error opening URL:', url, err);
+      }
     }
   };
 
