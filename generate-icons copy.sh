@@ -7,6 +7,52 @@ set -e
 
 SOURCE_IMAGE="src/assets/imageLoadingPlaceholder.png"
 ANDROID_DIR="android/app/src/main/res"
+IOS_DIR="ios/qirim_junior/Images.xcassets/AppIcon.appiconset"
+
+echo "🎨 Generating app icons from $SOURCE_IMAGE"
+
+# Create directories if they don't exist
+mkdir -p "$IOS_DIR"
+
+# ===== iOS App Icons =====
+echo "📱 Generating iOS icons..."
+
+# iPhone Notification (20pt)
+sips -z 40 40 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-20@2x.png" > /dev/null
+sips -z 60 60 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-20@3x.png" > /dev/null
+
+# iPhone Settings (29pt)
+sips -z 58 58 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-29@2x.png" > /dev/null
+sips -z 87 87 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-29@3x.png" > /dev/null
+
+# iPhone Spotlight (40pt)
+sips -z 80 80 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-40@2x.png" > /dev/null
+sips -z 120 120 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-40@3x.png" > /dev/null
+
+# iPhone App (60pt)
+sips -z 120 120 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-60@2x.png" > /dev/null
+sips -z 180 180 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-60@3x.png" > /dev/null
+
+# iPad Notification (20pt)
+sips -z 20 20 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-20.png" > /dev/null
+
+# iPad Settings (29pt)
+sips -z 29 29 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-29.png" > /dev/null
+
+# iPad Spotlight (40pt)
+sips -z 40 40 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-40.png" > /dev/null
+
+# iPad App (76pt)
+sips -z 76 76 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-76.png" > /dev/null
+sips -z 152 152 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-76@2x.png" > /dev/null
+
+# iPad Pro App (83.5pt)
+sips -z 167 167 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-83.5@2x.png" > /dev/null
+
+# App Store
+sips -z 1024 1024 "$SOURCE_IMAGE" --out "$IOS_DIR/Icon-1024.png" > /dev/null
+
+echo "✅ iOS icons generated"
 
 # ===== Android App Icons =====
 echo "🤖 Generating Android icons..."
