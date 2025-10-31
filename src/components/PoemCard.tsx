@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -19,14 +19,12 @@ import { PoemModel } from '../database';
 import { Language } from '../types';
 
 
-const { width } = Dimensions.get('window');
-const CARD_WIDTH = width - theme.spacing.lg * 2;
-
 interface PoemCardProps {
   poem: PoemModel;
   language: Language;
   onPress: () => void;
   index: number;
+  numColumns?: number;
 }
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -36,7 +34,17 @@ export const PoemCard: React.FC<PoemCardProps> = ({
   language,
   onPress,
   index,
+  numColumns = 1,
 }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
+  // Calculate card width based on number of columns
+  const cardWidth = useMemo(() => {
+    const totalSpacing = theme.spacing.lg * 2; // Container horizontal padding
+    const columnGap = theme.spacing.md * (numColumns - 1); // Gaps between columns
+    const availableWidth = windowWidth - totalSpacing - columnGap;
+    return availableWidth / numColumns;
+  }, [windowWidth, numColumns]);
   const scale = useSharedValue(1);
   const translateY = useSharedValue(50);
   const opacity = useSharedValue(0);
@@ -76,9 +84,15 @@ export const PoemCard: React.FC<PoemCardProps> = ({
 
   const title = language === 'lat' ? poem.titleLat : poem.titleCyr;
 
+  const dynamicStyles = useMemo(() => ({
+    container: {
+      width: cardWidth,
+    },
+  }), [cardWidth]);
+
   return (
     <AnimatedTouchable
-      style={[styles.container, animatedStyle]}
+      style={[styles.container, dynamicStyles.container, animatedStyle]}
       onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
@@ -118,10 +132,9 @@ export const PoemCard: React.FC<PoemCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: CARD_WIDTH,
     backgroundColor: theme.colors.surface,
     borderRadius: theme.borderRadius.xl,
-    marginHorizontal: theme.spacing.lg,
+    marginHorizontal: theme.spacing.sm,
     marginVertical: theme.spacing.sm,
     overflow: 'hidden',
     ...theme.shadows.medium,

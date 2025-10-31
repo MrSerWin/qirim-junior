@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-  Dimensions,
+  useWindowDimensions,
   Platform,
 } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
@@ -20,12 +20,10 @@ import Animated, {
 import PoemService from '@services/PoemService';
 import { PoemModel } from '@database';
 import { useLanguage } from '@hooks/useLanguage';
+import { useDeviceOrientation } from '@hooks/useDeviceOrientation';
 import { theme } from '../theme';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-
-const { width, height } = Dimensions.get('window');
-const IMAGE_HEIGHT = height * 0.4;
 
 type PoemDetailRouteProp = RouteProp<RootStackParamList, 'PoemDetail'>;
 
@@ -33,6 +31,14 @@ const PoemDetailScreen: React.FC = () => {
   const route = useRoute<PoemDetailRouteProp>();
   const { poemId } = route.params;
   const { language, toggleLanguage } = useLanguage();
+  const { width, height } = useWindowDimensions();
+  const { orientation } = useDeviceOrientation();
+
+  // Calculate image height based on orientation
+  // Portrait: 40% of screen height, Landscape: 60% of screen height (more reasonable)
+  const imageHeight = useMemo(() => {
+    return orientation === 'portrait' ? height * 0.4 : height * 0.6;
+  }, [height, orientation]);
 
   const [poem, setPoem] = useState<PoemModel | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,18 +66,23 @@ const PoemDetailScreen: React.FC = () => {
     },
   });
 
+  const dynamicImageStyle = useMemo(() => ({
+    width,
+    height: imageHeight,
+  }), [width, imageHeight]);
+
   const imageAnimatedStyle = useAnimatedStyle(() => {
     const scale = interpolate(
       scrollY.value,
-      [-IMAGE_HEIGHT, 0, IMAGE_HEIGHT],
+      [-imageHeight, 0, imageHeight],
       [2, 1, 0.8],
       Extrapolate.CLAMP
     );
 
     const translateY = interpolate(
       scrollY.value,
-      [-IMAGE_HEIGHT, 0, IMAGE_HEIGHT],
-      [-IMAGE_HEIGHT / 2, 0, IMAGE_HEIGHT * 0.3],
+      [-imageHeight, 0, imageHeight],
+      [-imageHeight / 2, 0, imageHeight * 0.3],
       Extrapolate.CLAMP
     );
 
@@ -103,7 +114,7 @@ const PoemDetailScreen: React.FC = () => {
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
       >
-        <Animated.View style={[styles.imageContainer, imageAnimatedStyle]}>
+        <Animated.View style={[styles.imageContainer, dynamicImageStyle, imageAnimatedStyle]}>
           <FastImage
             source={{
               uri: poem.imageToView,
@@ -149,8 +160,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   imageContainer: {
-    width,
-    height: IMAGE_HEIGHT,
     position: 'relative',
   },
   image: {

@@ -15,6 +15,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { RootStackParamList } from '../navigation/types';
 import { useLanguage } from '../hooks/useLanguage';
+import { useDeviceOrientation } from '../hooks/useDeviceOrientation';
 import { AuthorModel, ThemeModel } from '../database';
 import { usePoems } from '../hooks/usePoems';
 import PoemService from '../services/PoemService';
@@ -32,6 +33,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 const PoemsListScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const { language, toggleLanguage } = useLanguage();
+  const { numColumns } = useDeviceOrientation();
 
   const [selectedAuthor, setSelectedAuthor] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
@@ -133,15 +135,19 @@ const PoemsListScreen: React.FC = () => {
       <FlatList
         data={poems}
         keyExtractor={(item) => item.id}
+        key={`flatlist-${numColumns}`} // Force re-render when columns change
+        numColumns={numColumns}
         renderItem={({ item, index }) => (
           <PoemCard
             poem={item}
             language={language}
             onPress={() => handlePoemPress(item.poemId)}
             index={index}
+            numColumns={numColumns}
           />
         )}
         contentContainerStyle={styles.listContent}
+        columnWrapperStyle={numColumns > 1 ? styles.columnWrapper : undefined}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -285,6 +291,10 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+  },
+  columnWrapper: {
+    justifyContent: 'flex-start',
   },
   headerLeft: {
     flexDirection: 'row',
